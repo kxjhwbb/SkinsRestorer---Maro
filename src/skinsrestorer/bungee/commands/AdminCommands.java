@@ -1,5 +1,6 @@
 package skinsrestorer.bungee.commands;
 
+import net.md_5.bungee.BungeeCord;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import net.md_5.bungee.api.CommandSender;
@@ -39,7 +40,7 @@ public class AdminCommands extends Command {
 			sender.sendMessage(Locale.RELOAD);
 
 		} else if ((args.length == 2) && args[0].equalsIgnoreCase("drop")) {
-			StringBuilder sb = new StringBuilder();
+			/*StringBuilder sb = new StringBuilder();
 			for (int i = 2; i < args.length; i++)
 				if (args.length == 3)
 					sb.append(args[i]);
@@ -47,13 +48,16 @@ public class AdminCommands extends Command {
 					if (i + 1 == args.length)
 						sb.append(args[i]);
 					else
-						sb.append(args[i] + " ");
+						sb.append(args[i] + " ");*/
 
-			SkinStorage.removeSkinData(sb.toString());
-			sender.sendMessage(Locale.SKIN_DATA_DROPPED.replace("%player", sb.toString()));
+			SkinStorage.removePlayerSkin(args[1]);
+//			SkinStorage.removeSkinData(sb.toString());
+			sender.sendMessage(Locale.SKIN_DATA_DROPPED.replace("%player", args[1]));
 
 		} else if (args.length > 2 && args[0].equalsIgnoreCase("set")) {
-			StringBuilder sb = new StringBuilder();
+			// sr set wbb muter
+			//     0   1   2
+			/*StringBuilder sb = new StringBuilder();
 			for (int i = 2; i < args.length; i++)
 				if (args.length == 3)
 					sb.append(args[i]);
@@ -61,10 +65,10 @@ public class AdminCommands extends Command {
 					if (i + 1 == args.length)
 						sb.append(args[i]);
 					else
-						sb.append(args[i] + " ");
+						sb.append(args[i] + " ");*/
 
-			final String skin = sb.toString();
-			ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[1]);
+			final String skin = args[2];
+			/*ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[1]);
 
 			if (player == null)
 				for (ProxiedPlayer pl : ProxyServer.getInstance().getPlayers()) {
@@ -79,13 +83,11 @@ public class AdminCommands extends Command {
 				return;
 			}
 
-			final ProxiedPlayer p = player;
+			final ProxiedPlayer p = player;*/
 
-			SkinsRestorer.getInstance().getExecutor().submit(new Runnable() {
-
+			BungeeCord.getInstance().getScheduler().runAsync(SkinsRestorer.getInstance(), new Runnable() {
 				@Override
 				public void run() {
-
 					if (SkinStorage.getSkinData(skin) == null)
 						try {
 							MojangAPI.getUUID(skin);
@@ -94,13 +96,22 @@ public class AdminCommands extends Command {
 							return;
 						}
 
-					SkinStorage.setPlayerSkin(p.getName(), skin);
-					SkinApplier.applySkin(p);
+					SkinStorage.setPlayerSkin(args[1].toLowerCase(), skin);
+					SkinApplier.applySkin(args[1].toLowerCase());
 					sender.sendMessage(Locale.SKIN_CHANGE_SUCCESS);
 					return;
 				}
-
 			});
+
+			/*SkinsRestorer.getInstance().getExecutor().submit(new Runnable() {
+
+				@Override
+				public void run() {
+
+
+				}
+
+			});*/
 		} else if ((args.length > 0) && args[0].equalsIgnoreCase("props")) {
 
 			ProxiedPlayer p = null;

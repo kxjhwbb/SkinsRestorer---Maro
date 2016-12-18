@@ -12,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -63,7 +64,7 @@ public class SkinsRestorer extends Plugin {
 		multibungee = Config.MULTIBUNGEE_ENABLED
 				|| ProxyServer.getInstance().getPluginManager().getPlugin("RedisBungee") != null;
 
-		exe.submit(new Runnable() {
+		getProxy().getScheduler().runAsync(this, new Runnable() {
 
 			@Override
 			public void run() {

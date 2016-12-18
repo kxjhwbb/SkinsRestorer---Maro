@@ -10,9 +10,11 @@ import java.util.concurrent.Executors;
 
 import javax.sql.rowset.CachedRowSet;
 
+import net.md_5.bungee.BungeeCord;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import skinsrestorer.bukkit.SkinsRestorer;
+//import skinsrestorer.bukkit.SkinsRestorer;
+import skinsrestorer.bungee.SkinsRestorer;
 import skinsrestorer.shared.utils.MojangAPI;
 import skinsrestorer.shared.utils.MojangAPI.SkinRequestException;
 import skinsrestorer.shared.utils.MySQL;
@@ -125,10 +127,10 @@ public class SkinStorage {
 					folder.getAbsolutePath() + File.separator + "Players" + File.separator + name + ".player");
 
 			try {
-				if (skin.equalsIgnoreCase(name) && playerFile.exists()) {
+				/*if (skin.equalsIgnoreCase(name) && playerFile.exists()) {
 					playerFile.delete();
 					return;
-				}
+				}*/
 
 				if (!playerFile.exists())
 					playerFile.createNewFile();
@@ -254,7 +256,7 @@ public class SkinStorage {
 	 * 
 	 * Returns null if player has no custom skin set. (even if its his own name)
 	 */
-	public static String getPlayerSkin(String name) {
+	public static String getPlayerSkin(String name) {//根据玩家名获取皮肤
 		name = name.toLowerCase();
 		if (Config.USE_MYSQL) {
 
@@ -264,7 +266,7 @@ public class SkinStorage {
 				try {
 					String skin = crs.getString("Skin");
 
-					if (skin.isEmpty() || skin.equalsIgnoreCase(name)) {
+					if (skin.isEmpty()/* || skin.equalsIgnoreCase(name)*/) {
 						removePlayerSkin(name);
 						skin = name;
 					}
@@ -294,8 +296,8 @@ public class SkinStorage {
 
 				buf.close();
 
-				if (skin.equalsIgnoreCase(name))
-					playerFile.delete();
+				/*if (skin.equalsIgnoreCase(name))
+					playerFile.delete();*/
 
 				return skin;
 
@@ -319,10 +321,10 @@ public class SkinStorage {
 	 * 
 	 **/
 	public static Object getOrCreateSkinForPlayer(final String name) {
-		String skin = getPlayerSkin(name);
+		String skin = getPlayerSkin(name);//根据玩家名获取皮肤
 
 		if (skin == null)
-			skin = name.toLowerCase();
+			return null;//skin = name.toLowerCase();    //如果这样写，盗版玩家+正版玩家名的情况下，没有皮肤也会有皮肤
 
 		Object textures = getSkinData(skin);
 		if (textures == null) {
@@ -333,7 +335,7 @@ public class SkinStorage {
 		// Schedule skin update for next login
 		final String sname = skin;
 		final Object oldprops = textures;
-		exe.submit(new Runnable() {
+		BungeeCord.getInstance().getScheduler().runAsync(SkinsRestorer.getInstance(), new Runnable() {
 
 			@Override
 			public void run() {
@@ -373,8 +375,8 @@ public class SkinStorage {
 					if (shouldUpdate) {
 						if (isBungee)
 							skinsrestorer.bungee.SkinApplier.applySkin(name);
-						else
-							SkinsRestorer.getInstance().getFactory().updateSkin(org.bukkit.Bukkit.getPlayer(name));
+						//else
+						//	SkinsRestorer.getInstance().getFactory().updateSkin(org.bukkit.Bukkit.getPlayer(name));
 					}
 				} catch (Exception e) {
 				}

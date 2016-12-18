@@ -49,7 +49,7 @@ public class SkinsRestorerAPI {
 		} catch (Throwable t) {
 			org.bukkit.entity.Player p = null;
 
-			try {
+			/*try {
 				p = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
 			} catch (Exception e) {
 				p = Bukkit.getOnlinePlayers().iterator().next();
@@ -71,7 +71,7 @@ public class SkinsRestorerAPI {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
+			}*/
 		}
 	}
 
@@ -108,12 +108,12 @@ public class SkinsRestorerAPI {
 	 */
 	public static void applySkin(Object player) {
 		// Trying to use Bukkit.
-		try {
-			skinsrestorer.bukkit.SkinsRestorer.getInstance().getFactory().updateSkin((org.bukkit.entity.Player) player);
-		} catch (Throwable t) {
+		//try {
+		//	skinsrestorer.bukkit.SkinsRestorer.getInstance().getFactory().updateSkin((org.bukkit.entity.Player) player);
+		//} catch (Throwable t) {
 			// On fail trying to use Bungee.
 			skinsrestorer.bungee.SkinApplier.applySkin((net.md_5.bungee.api.connection.ProxiedPlayer) player);
-		}
+		//}
 	}
 
 	/**
